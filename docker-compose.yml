@@ -1,0 +1,33 @@
+version: "3.6"
+services:
+  app:
+    container_name: app
+    restart: always
+    build:
+      context: test-microservice/
+      args:
+        - NPM_TOKEN_ARG=$NPM_TOKEN
+    ports:
+      - "80"
+    links:
+      - rabbitmq
+      - mongodb 
+    environment:
+      - NODE_ENV=production
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:alpine
+    hostname: rabbitmq
+    volumes:
+      - ./data/rabbitmq:/data/
+    ports:
+      - "5672"
+
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    volumes:
+      - ./data/mongodb:/data/db
+    ports:
+      - "27017"

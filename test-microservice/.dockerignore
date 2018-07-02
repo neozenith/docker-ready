@@ -1,0 +1,28 @@
+# OSX Cruft
+**/.DS_Store
+
+# Dependencies
+node_modules/**
+
+# Repeated from .gitignore
+# dist/
+data/
+docs/
+test/
+
+# Git 
+.git/
+.gitignore
+
+*.yml
+*.md
+**/*.log
+**/*.pem
+
+# Credentials
+**/.env*
+
+# Dockerfile, Procfile etc
+*file
+
+*ignore
