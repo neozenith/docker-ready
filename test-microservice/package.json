@@ -1,0 +1,15 @@
+{
+  "name": "test-microservice",
+  "version": "1.0.0",
+  "description": "Test Express static site microservice",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Josh Peak <neozenith.dev@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3",
+    "morgan": "^1.9.0"
+  }
+}
