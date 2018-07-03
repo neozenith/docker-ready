@@ -4,7 +4,7 @@
   "description": "Event Driven Docker",
   "main": "lib/index.js",
   "scripts": {
-    "build":"tsc",
+    "build": "tsc",
     "test": "mocha"
   },
   "keywords": [
@@ -15,6 +15,7 @@
   "author": "Josh Peak <neozenith.dev@gmail>",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^10.5.1",
     "mocha": "^5.2.0",
     "ts-node": "^7.0.0",
     "typescript": "^2.9.2"

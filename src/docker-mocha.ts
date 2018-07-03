@@ -1,12 +1,11 @@
 'use strict';
 import { exec } from 'child_process';
-import http from 'http';
-import mocha from 'mocha';
-import url from 'url';
+import * as http from 'http';
+import * as url from 'url';
 
-const handlers = {
+const handlers: any = {
   // Default handler
-  'http:': (uri) => {
+  'http:': (uri: string) => {
     // eslint-disable-next-line no-unused-vars
     return new Promise((resolve, reject) => {
       http
@@ -65,9 +64,11 @@ export default class DockerMocha {
    *
    * @return {void}
    */
-  public learn(protocol, readyHandler) {
+  public learn(protocol: string, readyHandler: (url: string) => Promise<boolean>) {
     handlers[protocol] = readyHandler;
   }
+
+
   /**
    * Exceute a child process as a promise. eg
    * ```
@@ -79,7 +80,7 @@ export default class DockerMocha {
    *
    * @return {Promise} Promise will return stdout/stderr streams
    */
-  public runProcess(command) {
+  public runProcess(command: string) {
     // Return a promise to run this child process but do no start running it.
     return new Promise((resolve, reject) => {
       // child_process.exec will create a ChildProcess Object to queue up this
@@ -112,7 +113,7 @@ export default class DockerMocha {
    * @return {Array[Objects]} Promise of Array of Objects decribing containers.
    * @see queryDocker
    */
-  public getComposedContainers(project) {
+  public getComposedContainers(project: string) {
     return this.queryDocker(`/containers/json?label="com.docker.compose.project=${project}"`);
   }
 
@@ -129,14 +130,14 @@ export default class DockerMocha {
    * @return {Promise} - Promise resolves to JSON parsed Object from Docker Engine query.
    *
    */
-  public queryDocker(path, options?, api?) {
+  public queryDocker(path: string, options?: any, api?: string) {
     const _api = api || `v1`;
     // https://docs.docker.com/engine/api/v1.37/
     // Initialise sane defaults for querying docker and
     // merge with optional user provided options
     const _options = Object.assign(
       {
-        path: `${path}`,
+        path: `${_api}${path}`,
         socketPath: '/var/run/docker.sock'
       },
       options
@@ -147,7 +148,7 @@ export default class DockerMocha {
       // Define output string accumulator
       let output = '';
       // Define callback that prepares eventHandlers
-      const callback = (res) => {
+      const callback = (res: http.IncomingMessage) => {
         res.setEncoding('utf8');
         res.on('data', (data) => (output += data));
         res.on('error', (data) => reject(data));
@@ -162,7 +163,7 @@ export default class DockerMocha {
 
   /**
    */
-  public allReadyYet(serviceUrls) {
+  public allReadyYet(serviceUrls: string[]) {
     return Promise.all(
       serviceUrls.map(async (serviceUrl) => {
         return this.readyYet(serviceUrl);
@@ -180,14 +181,15 @@ export default class DockerMocha {
    *
    * @return {Promise} - Empty response, just resolves on success or rejects on timeout.
    */
-  public readyYet(uri, timeout?, interval?) {
+  public readyYet(uri: string, timeout?: number, interval?: number) {
     const _timeout = timeout || 5000; // ms
     const _interval = interval || 1000; // ms
-    const _url = url.parse(uri);
+    const _url: any = url.parse(uri);
 
     return new Promise((resolve, reject) => {
+      let finished: boolean = false;
       // Create interval check call back
-      let interv = setInterval(async () => {
+      const interv: NodeJS.Timer = setInterval(async () => {
         // Check list of understood protocols
         if (_url.protocol in handlers) {
           // tslint:disable-next-line:no-console
@@ -207,7 +209,7 @@ export default class DockerMocha {
           // Clear retry logic as soon as it is ready
           if (ready) {
             clearInterval(interv);
-            interv = undefined;
+            finished = true;
             resolve();
           }
         } else {
@@ -217,9 +219,9 @@ export default class DockerMocha {
 
       // Create timeout to cap interval executions
       setTimeout(() => {
-        if (interv) {
+        if (!finished) {
           clearInterval(interv);
-          interv = undefined;
+          finished = true;
           reject(new Error(`${uri} timed out after ${_timeout}ms`));
         }
       }, _timeout);
