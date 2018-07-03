@@ -4,7 +4,7 @@
   "description": "Event Driven Docker",
   "main": "lib/index.js",
   "scripts": {
-    "build":"tsc"
+    "build":"tsc",
     "test": "mocha"
   },
   "keywords": [

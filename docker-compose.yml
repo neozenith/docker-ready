@@ -5,13 +5,11 @@ services:
     restart: always
     build:
       context: test-microservice/
-      args:
-        - NPM_TOKEN_ARG=$NPM_TOKEN
     ports:
-      - "80"
+      - "8080"
     links:
       - rabbitmq
-      - mongodb 
+      - mongodb
     environment:
       - NODE_ENV=production
 
