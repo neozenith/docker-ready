@@ -20,16 +20,10 @@ app.use((err, req, res, next) => {
 });
 /* eslint-enable no-unused-vars */
 
-process.on('exit', code => {
-  console.info(`Application about to exit with code: ${code}`);
-});
-
+// Handle shutdown behaviour cleanly
+const shutdownSystem = code => process.exit(code);
+process.on('exit', code => console.info(`Application about to exit with code: ${code}`));
 process.on('SIGINT', () => shutdownSystem('SIGINT'));
-
 process.on('SIGTERM', () => shutdownSystem('SIGTERM'));
 
 app.listen(port, () => console.log('http://localhost:' + port));
-
-function shutdownSystem(code) {
-  process.exit(code);
-}
