@@ -26,11 +26,11 @@ const handlers: any = {
 };
 
 /**
- * DockerMocha class is used to eventfully trigger a docker test fixture to
+ * DockerReady class is used to eventfully trigger a docker test fixture to
  * startup, await ports, assist creating serviceURLs, await service URLs
  * to accept valid commands.
  */
-export default class DockerMocha {
+export default class DockerReady {
   /**
    * Default constructor does nothing.
    * @return {void}
@@ -39,12 +39,12 @@ export default class DockerMocha {
   constructor() {}
 
   /**
-   * This is to be used in conjunction with `readyYet`. DockerMocha only knows
+   * This is to be used in conjunction with `readyYet`. DockerReady only knows
    * how to handle `http:` by default. All other protocols will have to be `learn`t.
    *
    * ```
-   * const {DockerMocha} = require('./docker_fixture.js');
-   * const fixture = new DockerMocha();
+   * const {DockerReady} = require('./docker_fixture.js');
+   * const fixture = new DockerReady();
    * fixture.learn('mongo:', url => {
    *    return new Promise((resolve, reject)=>{
    *      resolve(true);
@@ -72,15 +72,15 @@ export default class DockerMocha {
   /**
    * Exceute a child process as a promise. eg
    * ```
-   * await DockerMocha.runProcess('docker-compose up --build -d');
-   * await DockerMocha.runProcess('docker-compose down');
+   * await DockerReady.runProcess('docker-compose up --build -d');
+   * await DockerReady.runProcess('docker-compose down');
    * ```
    *
    * @param {string} command - Command process to execute asynchronously
    *
    * @return {Promise} Promise will return stdout/stderr streams
    */
-  public runProcess(command: string) {
+  public static runProcess(command: string) {
     // Return a promise to run this child process but do no start running it.
     return new Promise((resolve, reject) => {
       // child_process.exec will create a ChildProcess Object to queue up this
@@ -113,7 +113,7 @@ export default class DockerMocha {
    * @return {Array[Objects]} Promise of Array of Objects decribing containers.
    * @see queryDocker
    */
-  public getComposedContainers(project: string) {
+  public static getComposedContainers(project: string) {
     return this.queryDocker(`/containers/json?label="com.docker.compose.project=${project}"`);
   }
 
@@ -130,7 +130,7 @@ export default class DockerMocha {
    * @return {Promise} - Promise resolves to JSON parsed Object from Docker Engine query.
    *
    */
-  public queryDocker(path: string, options?: any, api?: string) {
+  public static queryDocker(path: string, options?: any, api?: string) {
     const _api = api || `v1`;
     // https://docs.docker.com/engine/api/v1.37/
     // Initialise sane defaults for querying docker and
