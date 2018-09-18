@@ -1,4 +1,4 @@
-# Docker Ready
+# Docker Ready 🐳
 
 This framework is intended to facilitate NodeJS integration testing where a microservice 
 requires other resources such as MongoDB, PostgreSQL, RabbitMQ, ElasticSearch etc
